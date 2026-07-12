@@ -1,2 +1,16 @@
-# OngolaCompiler
-Compiler in a tradition cameroonian language
+# QuantCompiler
+Compiler for a quantum computer
+
+
+Objectif
+
+var a = 0;
+read b;
+read c;
+while(a < c)
+do
+    a = a + b;
+    if(a!=2) then
+        print a;
+fi
+done

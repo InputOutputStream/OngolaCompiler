@@ -1,0 +1,12 @@
+Qubits q[3];
+
+let i = 0;
+while (i < 3)
+{
+    H(q[i]);
+    i = i + 1;
+};
+
+measure(q[0]);
+measure(q[1]);
+measure(q[2]);
