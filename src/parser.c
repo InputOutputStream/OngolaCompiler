@@ -25,7 +25,7 @@ parser_t *init_parser(lexer_t *lexer){
     parser->current_token = lexer_get_next_token(lexer);
     parser->previous_token = parser->current_token;
 
-    parser->scope = init_scope();
+    parser->scope = init_scope(NULL);
 
     return parser;
 }
@@ -75,8 +75,12 @@ ast_t *parser_parse_statement(parser_t *parser, scope_t *scope){
             return parser_parse_function_return(parser, scope);
         case TOKEN_FUNC:
             return parser_parse_function_definition(parser, scope);
+        case TOKEN_SEMI:
+            return init_ast(AST_NOOP);
         default:
-            break;
+            fprintf(stderr, "Unexpected token in statement: '%s' (type %d)\n",
+                    parser->current_token->value, parser->current_token->type);
+            exit(EXIT_FAILURE);
     }
 
     return init_ast(AST_NOOP);
@@ -292,7 +296,7 @@ ast_t *parser_parse_variable(parser_t *parser, scope_t *scope){
 }
 
 ast_t *parser_parse_variable_definition(parser_t *parser, scope_t *scope){
-    parser_eat(parser, TOKEN_ID); // let, int, float, bool
+    parser_eat(parser, TOKEN_ID); // ripare, detsinfe
     char *var_definition_var_name  = parser->current_token->value;
 
     parser_eat(parser, TOKEN_ID); // Variable name
@@ -371,11 +375,11 @@ ast_t *parser_parse_string(parser_t *parser, scope_t *scope){
 
 ast_t *parser_parse_id(parser_t *parser, scope_t *scope)
 {
-    if(strcmp(parser->current_token->value, "let")==0) 
+    if(strcmp(parser->current_token->value, "ripare")==0)  /* Declarer */
     {
         return parser_parse_variable_definition(parser, scope);
     }
-    else if(strcmp(parser->current_token->value, "var")==0) 
+    else if(strcmp(parser->current_token->value, "detsinfe")==0)  /* Variable */
     {
         return parser_parse_variable_definition(parser, scope);
     }

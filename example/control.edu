@@ -1,0 +1,18 @@
+ripare total = 0;
+bisou (ripare i = 0; i < 5; i = i + 1) {
+    de (i == 3) {
+        ribate("skipping three");
+    } nensole {
+        total = total + i;
+    }
+}
+ribate(total);
+
+ripare x = -5;
+ribate(x);
+ribate(-(2 + 3));
+
+kesa greet(name) {
+    ribate(name);
+}
+greet("hello from compiled edu");

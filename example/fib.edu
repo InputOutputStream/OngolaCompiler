@@ -1,0 +1,12 @@
+kesa fib(n) {
+    de (n < 2) {
+        delorene n;
+    }
+    delorene fib(n - 1) + fib(n - 2);
+}
+
+ripare i = 0;
+tsiamenke (i <= 10) {
+    ribate(fib(i));
+    i = i + 1;
+}

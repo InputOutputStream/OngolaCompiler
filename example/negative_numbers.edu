@@ -1,0 +1,7 @@
+ripare x = -10;
+ripare y = -(x + 5);
+ribate(x);
+ribate(y);
+de (x < 0) {
+    ribate("x is negative");
+}

@@ -9,9 +9,11 @@ typedef struct SCOPE_STRUCT
 
     ast_t ** variable_definitions;
     size_t variable_definitions_size;
+
+    struct SCOPE_STRUCT *parent;  
 }scope_t;
 
-scope_t *init_scope();
+scope_t *init_scope(scope_t *parent);
 ast_t *scope_add_function_definition(scope_t *scope, ast_t *function_def);
 ast_t *scope_get_function_definition(scope_t *scope, const char *function_name);
 

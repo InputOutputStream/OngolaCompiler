@@ -87,13 +87,16 @@ token_t *lexer_get_next_token(lexer_t *lexer)
             lexer_skip_carriage(lexer);
         }
 
+        if (lexer->c == '\0')
+            break;
+
         if(isdigit(lexer->c) || lexer->c == '.')
             return lexer_collect_number(lexer); 
 
         if(lexer->c == '"')
             return lexer_collect_string(lexer); 
 
-        if(isalnum(lexer->c))
+        if(isalnum(lexer->c) || lexer->c == '_')
             return lexer_collect_id(lexer);
 
         switch(lexer->c)
@@ -131,8 +134,29 @@ token_t *lexer_get_next_token(lexer_t *lexer)
                 return _lexer_advance_with_token(lexer, init_token(TOKEN_MINUS, lexer_get_current_char_as_string(lexer)));
                 break;
             case '/':
-                return _lexer_advance_with_token(lexer, init_token(TOKEN_SLASH, lexer_get_current_char_as_string(lexer)));
-                break;
+                lexer_advance(lexer);
+                if (lexer->c == '/') {
+                    while (lexer->c != '\n' && lexer->c != '\0') {
+                        lexer_advance(lexer);
+                    }
+                    continue;
+                }
+                if (lexer->c == '*') {
+                    lexer_advance(lexer);
+                    while (lexer->c != '\0') {
+                        if (lexer->c == '*') {
+                            lexer_advance(lexer);
+                            if (lexer->c == '/') {
+                                lexer_advance(lexer);
+                                break;
+                            }
+                            continue;
+                        }
+                        lexer_advance(lexer);
+                    }
+                    continue;
+                }
+                return init_token(TOKEN_SLASH, "/");
             case '*':
                 return _lexer_advance_with_token(lexer, init_token(TOKEN_STAR, lexer_get_current_char_as_string(lexer)));
                 break;
@@ -232,7 +256,7 @@ token_t *lexer_collect_id(lexer_t *lexer)
     char *value = calloc(1, sizeof(char));
     value[0] = '\0';
 
-    while(isalnum(lexer->c))
+    while(isalnum(lexer->c) || lexer->c == '_')
     {
         char *s = lexer_get_current_char_as_string(lexer);
         value = realloc(value, (strlen(value) + strlen(s) + 1) * sizeof(char));
@@ -240,17 +264,17 @@ token_t *lexer_collect_id(lexer_t *lexer)
         lexer_advance(lexer);
     }
 
-    if(strcmp(value, "if")==0)
+    if(strcmp(value, "de")==0)
        return init_token(TOKEN_IF, value);
-    else if(strcmp(value, "else")==0)
+    else if(strcmp(value, "nensole")==0)
        return init_token(TOKEN_ELSE, value);
-    else if(strcmp(value, "while")==0)
+    else if(strcmp(value, "tsiamenke")==0)
        return init_token(TOKEN_WHILE, value);
-    else if(strcmp(value, "for")==0)
+    else if(strcmp(value, "bisou")==0)
        return init_token(TOKEN_FOR, value);
-    else if(strcmp(value, "->")==0)
+    else if(strcmp(value, "delorene")==0 || strcmp(value, "resoucte")==0)
        return init_token(TOKEN_RETURN, value);
-    else if(strcmp(value, "function") == 0)    
+    else if(strcmp(value, "kesa") == 0)
         return init_token(TOKEN_FUNC, value);
 
     return init_token(TOKEN_ID, value);

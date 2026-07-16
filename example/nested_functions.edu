@@ -1,0 +1,15 @@
+kesa outer(x) {
+    kesa inner(y) {
+        delorene y * 2;
+    }
+    delorene inner(x) + 1;
+}
+ribate(outer(10));
+
+de (1) {
+    kesa helper(z) {
+        delorene z + 100;
+    }
+    ribate(helper(1));
+}
+ribate(helper(2));

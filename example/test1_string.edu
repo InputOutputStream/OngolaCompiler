@@ -1,6 +1,0 @@
-let number = 20;
-let name = "john banga";
-let othername = "Sarah";
-print(name, othername);
-print(othername, name);
-print(number);

@@ -1,0 +1,9 @@
+ripare greeting = "Hello, " + "world!";
+ribate(greeting);
+
+ripare name = "Ada";
+ripare age = 36;
+ribate(name + " is " + age + " years old");
+
+ripare n = 5;
+ribate("n = " + n);

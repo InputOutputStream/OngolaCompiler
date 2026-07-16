@@ -1,0 +1,14 @@
+ripare flag = 1;
+de (flag == 1) {
+    detsinfe inner = 42;
+    ribate(inner);
+}
+ribate(inner);
+
+ripare n = 0;
+tsiamenke (n < 3) {
+    ripare doubled = n * 2;
+    ribate(doubled);
+    n = n + 1;
+}
+ribate(doubled);

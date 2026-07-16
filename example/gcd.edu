@@ -1,0 +1,16 @@
+kesa mod(a, b) {
+    tsiamenke (a >= b) {
+        a = a - b;
+    }
+    delorene a;
+}
+
+kesa gcd(a, b) {
+    de (b == 0) {
+        delorene a;
+    }
+    delorene gcd(b, mod(a, b));
+}
+
+ribate(gcd(48, 18));
+ribate(gcd(1071, 462));

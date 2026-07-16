@@ -3,7 +3,7 @@ INCLUDE = include
 TEST = test
 OBJ = obj
 BIN = bin
-TARGET = Qcomp
+TARGET = Ocomp
 
 LIB_SRC = $(wildcard $(SRC)/*.c)
 TEST_SRC = $(wildcard $(TEST)/*.c)
@@ -14,7 +14,10 @@ TEST_OBJ = $(patsubst $(TEST)/%.c,$(OBJ)/%.o,$(TEST_SRC))
 TEST_BIN = $(BIN)/test_suite
 
 CC = clang
-CFLAGS = -std=c23 -Wall -Wextra -pedantic -g -fPIC -I$(INCLUDE) -Wno-newline-eof 
+CFLAGS = -std=c23 -Wall -Wextra -pedantic -g -fPIC -I$(INCLUDE) -Wno-newline-eof \
+         -DEDU_RUNTIME_INCLUDE_DIR='"$(CURDIR)/$(INCLUDE)"' \
+         -DEDU_RUNTIME_SRC='"$(CURDIR)/$(SRC)/edu_runtime.c"'
+
 LDFLAGS = -lm
 
 all: directories compile

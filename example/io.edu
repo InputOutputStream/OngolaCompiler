@@ -1,0 +1,7 @@
+ribate("Enter your name:");
+detsinfe name = riba();
+ricane(name);
+
+ribate("Enter a number to double:");
+detsinfe n = riba();
+ricane(n * 2);

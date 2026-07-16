@@ -28,6 +28,61 @@ static ast_t* _builtin_print(visitor_t *visitor, struct AST_STRUCT** args, size_
     return init_ast(AST_NOOP);
 }
 
+static ast_t* _builtin_read(visitor_t __attribute_maybe_unused__ *visitor,
+                             struct AST_STRUCT __attribute_maybe_unused__ **args,
+                             size_t args_size)
+{
+    if (args_size != 0) {
+        fprintf(stderr, "`riba` (read) takes no arguments\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char buffer[4096];
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        return init_ast(AST_NOOP);
+    }
+
+    size_t len = strlen(buffer);
+    while (len > 0 && (buffer[len - 1] == '\n' || buffer[len - 1] == '\r')) {
+        buffer[--len] = '\0';
+    }
+
+    char *endptr;
+    double val = strtod(buffer, &endptr);
+    if (len > 0 && endptr != buffer && *endptr == '\0') {
+        ast_t *num = init_ast(AST_NUMBER);
+        num->number_value = val;
+        return num;
+    }
+
+    ast_t *str = init_ast(AST_STRING);
+    str->string_value = calloc(len + 1, sizeof(char));
+    memcpy(str->string_value, buffer, len + 1);
+    return str;
+}
+
+static ast_t* _builtin_write(visitor_t *visitor, struct AST_STRUCT** args, size_t args_size)
+{
+    for (size_t i = 0; i < args_size; i++)
+    {
+        ast_t *visited_ast = visitor_visit(visitor, args[i]);
+        switch (visited_ast->type)
+        {
+            case AST_STRING:
+                printf("%s\n", visited_ast->string_value);
+                break;
+            case AST_NUMBER:
+                printf("%g\n", visited_ast->number_value);
+                break;
+            default:
+                printf("<unprintable value, type %d>\n", visited_ast->type);
+                break;
+        }
+    }
+
+    return init_ast(AST_NOOP);
+}
+
 visitor_t *init_visitor(void)
 {
     visitor_t *visitor = calloc(1, sizeof(struct VISITOR_STRUCT));
@@ -87,6 +142,22 @@ ast_t *visitor_visit(visitor_t *visitor, ast_t *node){
 ast_t *visitor_visit_binop(visitor_t *visitor, ast_t *node){
     ast_t *left = visitor_visit(visitor, node->left_value);
     ast_t *right = visitor_visit(visitor, node->right_value);
+
+    if (node->operator_str && strcmp(node->operator_str, "+") == 0 &&
+        (left->type == AST_STRING || right->type == AST_STRING)) {
+        char lbuf[64], rbuf[64];
+        const char *ls = (left->type == AST_STRING) ? left->string_value :
+                          (left->type == AST_NUMBER ? (snprintf(lbuf, sizeof(lbuf), "%g", left->number_value), lbuf) : "");
+        const char *rs = (right->type == AST_STRING) ? right->string_value :
+                          (right->type == AST_NUMBER ? (snprintf(rbuf, sizeof(rbuf), "%g", right->number_value), rbuf) : "");
+        char *result = calloc(strlen(ls) + strlen(rs) + 1, sizeof(char));
+        strcpy(result, ls);
+        strcat(result, rs);
+
+        ast_t *str = init_ast(AST_STRING);
+        str->string_value = result;
+        return str;
+    }
 
     if (left->type != AST_NUMBER || right->type != AST_NUMBER) {
         fprintf(stderr, "Binop operands must evaluate to numbers\n");
@@ -184,9 +255,19 @@ ast_t *visitor_visit_function_call(visitor_t *visitor, ast_t *node){
        exit(EXIT_FAILURE );
     }
 
-    if(strcmp(node->funtion_call_name, "print")==0)
+    if(strcmp(node->funtion_call_name, "ribate")==0)
     {
         return _builtin_print(visitor, node->funtion_call_arguments, node->funtion_call_arguments_size);
+    }
+
+    if(strcmp(node->funtion_call_name, "riba")==0)
+    {
+        return _builtin_read(visitor, node->funtion_call_arguments, node->funtion_call_arguments_size);
+    }
+
+    if(strcmp(node->funtion_call_name, "ricane")==0)
+    {
+        return _builtin_write(visitor, node->funtion_call_arguments, node->funtion_call_arguments_size);
     }
 
     ast_t *function_def = scope_get_function_definition(node->scope, node->funtion_call_name);

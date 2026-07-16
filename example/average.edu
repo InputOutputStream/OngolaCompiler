@@ -1,0 +1,11 @@
+ribate("How many numbers?");
+ripare count = riba();
+ripare sum = 0;
+ripare i = 0;
+tsiamenke (i < count) {
+    ribate("Enter a number:");
+    ripare x = riba();
+    sum = sum + x;
+    i = i + 1;
+}
+ricane(sum / count);

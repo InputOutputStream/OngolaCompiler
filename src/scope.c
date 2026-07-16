@@ -4,17 +4,29 @@
 #include <string.h>
 
 
-scope_t *init_scope()
+scope_t *init_scope(scope_t *parent)
 {
     scope_t *scope = calloc(1, sizeof(struct SCOPE_STRUCT));
     scope->function_definition = (void *)0;
     scope->function_definition_size = 0;
-
     scope->variable_definitions = (void *)0;
     scope->variable_definitions_size = 0;
+    scope->parent = parent;
     return scope;
 }
 
+ast_t *scope_get_variable_definition(scope_t *scope, const char *variable_name)
+{
+    for (scope_t *s = scope; s != NULL; s = s->parent) {
+        for (size_t i = 0; i < s->variable_definitions_size; i++) {
+            ast_t *variable_def = s->variable_definitions[i];
+            if (strcmp(variable_def->variable_definition_variable_name, variable_name) == 0) {
+                return variable_def;
+            }
+        }
+    }
+    return (void *) 0;
+}
 ast_t *scope_add_function_definition(scope_t *scope, ast_t *function_def)
 {
     scope->function_definition_size ++;
@@ -35,18 +47,16 @@ ast_t *scope_add_function_definition(scope_t *scope, ast_t *function_def)
 
 ast_t *scope_get_function_definition(scope_t *scope, const char *function_name)
 {
-    for(size_t i=0; i<scope->function_definition_size; i++)
-    {
-        ast_t *function_def = scope->function_definition[i];
-
-        if(strcmp(function_def->funtion_definition_name, function_name) == 0)
-        {
-            return function_def;
+    for (scope_t *s = scope; s != NULL; s = s->parent) {
+        for (size_t i = 0; i < s->function_definition_size; i++) {
+            ast_t *function_def = s->function_definition[i];
+            if (strcmp(function_def->funtion_definition_name, function_name) == 0) {
+                return function_def;
+            }
         }
     }
     return (void *) 0;
 }
-
 
 ast_t *scope_add_variable_definition(scope_t *scope, ast_t *variable_def)
 {
@@ -84,16 +94,3 @@ ast_t *scope_add_variable_definition(scope_t *scope, ast_t *variable_def)
 }
 
 
-ast_t *scope_get_variable_definition(scope_t *scope, const char *variable_name)
-{
-    for(size_t i=0; i<scope->variable_definitions_size; i++)
-    {
-        ast_t *variable_def = scope->variable_definitions[i];
-
-        if(strcmp(variable_def->variable_definition_variable_name, variable_name) == 0)
-        {
-            return variable_def;
-        }
-    }
-    return (void *) 0;
-}

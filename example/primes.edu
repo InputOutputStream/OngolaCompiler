@@ -1,0 +1,28 @@
+kesa mod(a, b) {
+    tsiamenke (a >= b) {
+        a = a - b;
+    }
+    delorene a;
+}
+
+kesa is_prime(n) {
+    de (n < 2) {
+        delorene 0;
+    }
+    ripare d = 2;
+    tsiamenke (d * d <= n) {
+        de (mod(n, d) == 0) {
+            delorene 0;
+        }
+        d = d + 1;
+    }
+    delorene 1;
+}
+
+ripare i = 2;
+tsiamenke (i <= 50) {
+    de (is_prime(i) == 1) {
+        ribate(i);
+    }
+    i = i + 1;
+}

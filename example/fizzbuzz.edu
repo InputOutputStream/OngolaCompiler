@@ -1,0 +1,20 @@
+kesa mod(a, b) {
+    tsiamenke (a >= b) {
+        a = a - b;
+    }
+    delorene a;
+}
+
+ripare i = 1;
+tsiamenke (i <= 30) {
+    de (mod(i, 15) == 0) {
+        ribate("FizzBuzz");
+    } nensole de (mod(i, 3) == 0) {
+        ribate("Fizz");
+    } nensole de (mod(i, 5) == 0) {
+        ribate("Buzz");
+    } nensole {
+        ribate(i);
+    }
+    i = i + 1;
+}
